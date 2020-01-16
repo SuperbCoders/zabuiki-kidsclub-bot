@@ -1,0 +1,14 @@
+[Unit]
+Description=BookclubBot
+After=multi-user.target
+
+[Service]
+Type=simple
+EnvironmentFile={{ bot_env }}
+User=manager
+WorkingDirectory={{ manage_py_dir }}
+ExecStart=/usr/bin/python3.6 {{ manage_py_dir }}/manage.py runserver 127.0.0.1:8080
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

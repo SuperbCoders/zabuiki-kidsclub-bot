@@ -1,0 +1,16 @@
+[Unit]
+Description=Celery Beat Service
+After=network.target
+
+[Service]
+Type=simple
+User=manager
+EnvironmentFile={{ bot_env }}
+User=manager
+WorkingDirectory={{ manage_py_dir }}
+ExecStart=/bin/sh -c '/home/manager/.local/bin/celery beat  \
+  -A kidsclub --pidfile=/var/run/celery/kidsclub_beat.pid \
+  --logfile=/var/log/celery/kidsclub_beat.log --loglevel=DEBUG'
+
+[Install]
+WantedBy=multi-user.target

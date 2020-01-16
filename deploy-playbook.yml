@@ -1,0 +1,61 @@
+---
+- name: cook kidsclub bot
+  hosts: all
+  gather_facts: no
+
+  vars_files:
+    - secrets
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    project_dir: /home/manager/zabuiki-kidsclub-bot
+    manage_py_dir: /home/manager/zabuiki-kidsclub-bot/kidsclub
+    bot_env: /etc/systemd/system/kidsclub-bot.env
+
+  tasks:
+    - name: checkout project
+      git:
+        repo: https://github.com/SuperbCoders/zabuiki-kidsclub-bot.git
+        dest: "{{project_dir}}"
+        force: yes
+        version: master
+
+    - name: install deps
+      pip:
+        executable: pip3.6
+        requirements: "{{project_dir}}/requirements.txt"
+        extra_args: "--user"
+
+    - name: enviroment file template
+      become: true
+      template:
+        src: "bot.env.j2"
+        dest: "{{ bot_env }}"
+
+    - name: run migrations
+      shell:
+        chdir: "{{ project_dir }}"
+        cmd: "export $(grep -v '^#' {{ bot_env }} | xargs -0 ) && python3.6 manage.py migrate"
+
+    - name: templates
+      become: true
+      template:
+        src: "{{ item }}.service.j2"
+        dest: "/etc/systemd/system/{{ item }}.service"
+      with_items:
+        - kidsclub_bot
+        - kids_webserver
+        - kids_celery_beat
+        - kids_celery_worker
+
+    - name: service restarted
+      become: true
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: "{{ item }}"
+      with_items:
+        - kidsclub_bot
+        - kids_webserver
+        - kids_celery_beat
+        - kids_celery_worker
