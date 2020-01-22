@@ -15,6 +15,14 @@ class PersonMeetingInline(admin.StackedInline):
     extra = 0
 
 
+class PersonKidInline(admin.StackedInline):
+    model = PersonKid
+    fk_name = 'person'
+    readonly_fields = ('kid_seg_number', )
+    can_delete = False
+    extra = 0
+
+
 class PersonAdmin(admin.ModelAdmin):
     list_display = (
         'tg_id', 'tg_username', 'username', 'location',
@@ -23,7 +31,7 @@ class PersonAdmin(admin.ModelAdmin):
     )
     list_filter = ('is_blocked', )
     list_per_page = 15
-    inlines = [PersonMeetingInline]
+    inlines = [PersonMeetingInline, PersonKidInline]
 
     def good_review(self, person):
         return (

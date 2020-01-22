@@ -17,6 +17,7 @@ class Person(models.Model):
     tg_username = models.CharField(max_length=255, null=True, blank=True)
 
     username = models.CharField(max_length=255)
+    kid_amount = models.IntegerField(default=0)
     location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
     social_networks = models.TextField(blank=True)
 
@@ -39,19 +40,25 @@ class PersonKid(models.Model):
         MALE = 0, 'Мальчик'
         FEMALE = 1, 'Девочка'
 
-    age = models.IntegerField(blank=True)
-    sex = models.IntegerField(choices=Sex.choices, blank=True)
+    kid_seg_number = models.IntegerField(default=0)
+    age = models.IntegerField(default=0, blank=True)
+    sex = models.IntegerField(choices=Sex.choices, default=Sex.MALE, blank=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.person.username} - {self.age} - {self.get_sex_display()}"
 
 
 class BotMessage(models.Model):
     class MessageTypes(models.IntegerChoices):
         USER_WELCOME = 0, 'Приветсвие пользователя'
 
-        # ASK_FOR_NAME = 1, 'Спрашиваем имя'
-        ASK_FOR_ABOUT = 2, 'Спрашиваем о себе'
-        ASK_FOR_SOCIAL = 3, 'Спрашиваем соц сети'
-        ASK_FOR_CITY = 4, 'Спрашиваем город'
+        ASK_FOR_NAME = 1, 'Спрашиваем имя'
+        ASK_FOR_KID_AMOUNT = 2, 'Спрашиваем о количестве детей'
+        ASK_FOR_KID_AGE = 3, 'Спрашиваем возраст ребенка'
+        ASK_FOR_KID_SEX = 4, 'Спрашиваем пол ребенка'
+        ASK_FOR_CITY = 17, 'Спрашиваем округ'
+        ASK_FOR_SOCIAL = 18, 'Спрашиваем соцсети'
 
         PROFILE_SAVED = 5, 'Профиль сохранен'
 
@@ -69,6 +76,8 @@ class BotMessage(models.Model):
         FEEDBACK_REASON_COLLECTED = 14, 'Фидбек, отзыв собран'
 
         FEEDBACK_REQUEST = 15, 'Фидбек, как прошло'
+
+        NUMBER_INPUT_ERROR = 16, 'Введено некорректное число'
 
     type = models.IntegerField(choices=MessageTypes.choices, unique=True, primary_key=True)
     text = models.TextField()

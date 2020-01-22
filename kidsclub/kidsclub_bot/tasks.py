@@ -43,16 +43,16 @@ def create_invite_intent():
 
     persons = Person.objects.raw(f"""
         SELECT a.*
-        FROM bookclub_bot_person AS a
+        FROM kidsclub_bot_person AS a
         LEFT JOIN (
             SELECT *
-            FROM bookclub_bot_inviteintent
+            FROM kidsclub_bot_inviteintent
             WHERE date = '{intent_day}'
         ) AS b ON a.tg_id = b.person_id
         WHERE b.person_id IS NULL
             AND a.tg_id IS NOT NULL
             AND a.location_id IS NOT NULL
-            AND a.is_blocked = FALSE
+            AND a.is_blocked = 0
     """)
 
     if persons:
@@ -123,16 +123,36 @@ def find_pair():
         already_seen_person_ids = invite_intent.person.person_meeting.values_list('tg_id', flat=True)
         available_persons = invite_intents.exclude(person=invite_intent.person).values_list('person_id', flat=True)
 
+        persons_with_same_kid_ids = [p.id for p in Person.objects.raw(f"""
+            SELECT *
+            FROM kidsclub_bot_person
+            WHERE id in (
+                SELECT B.person_id
+                FROM (
+                    SELECT age, sex
+                    FROM kidsclub_bot_personkid
+                    WHERE person_id = {invite_intent.person.id}
+                ) AS A INNER JOIN (
+                    SELECT person_id, age, sex
+                    FROM kidsclub_bot_personkid
+                    WHERE person_id != {invite_intent.person.id}
+                ) AS B ON (
+                    A.age = B.age AND A.sex = B.sex
+                )
+            ) AND is_blocked = 0
+        """)]
+
         candidates = Person.objects.filter(
+            id__in=persons_with_same_kid_ids,
             location=invite_intent.person.location,
             tg_id__in=available_persons,
-            is_blocked=False,
         ).exclude(
             tg_id__in=already_seen_person_ids
         )
 
         if not candidates.exists():
             candidates = Person.objects.filter(
+                id__in=persons_with_same_kid_ids,
                 tg_id__in=available_persons,
                 is_blocked=False,
             ).exclude(
@@ -189,7 +209,6 @@ def send_pair_info():
                 pm.from_person_id,
                 msg_template.format(
                     username=pm.to_person.username,
-                    about=pm.to_person.about,
                     social_networks=pm.to_person.social_networks,
                 ),
                 reply_markup=keyboard

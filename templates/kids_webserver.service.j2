@@ -7,7 +7,7 @@ Type=simple
 EnvironmentFile={{ bot_env }}
 User=manager
 WorkingDirectory={{ manage_py_dir }}
-ExecStart=/usr/bin/python3.6 {{ manage_py_dir }}/manage.py runserver 127.0.0.1:8080
+ExecStart=/usr/bin/python3.6 {{ manage_py_dir }}/manage.py runserver 127.0.0.1:8090
 Restart=always
 
 [Install]

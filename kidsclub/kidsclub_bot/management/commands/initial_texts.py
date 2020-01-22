@@ -9,9 +9,11 @@ class Command(BaseCommand):
         BotMessage.MessageTypes.USER_WELCOME: 'Привет! Я бот для встреч клуба, зарегестрируйся с помощью команды',
 
         BotMessage.MessageTypes.ASK_FOR_NAME: 'Как тебя зовут?',
-        BotMessage.MessageTypes.ASK_FOR_ABOUT: 'Расскажи о себе',
-        BotMessage.MessageTypes.ASK_FOR_SOCIAL: 'Супер! И дай ссылку на свой профиль в Инстагрме или Фейсбуке',
-        BotMessage.MessageTypes.ASK_FOR_CITY: 'Отлично! Из какого ты округа?',
+        BotMessage.MessageTypes.ASK_FOR_KID_AMOUNT: 'Сколько детей?',
+        BotMessage.MessageTypes.ASK_FOR_KID_AGE: 'Сколько лет {} ребенку?',
+        BotMessage.MessageTypes.ASK_FOR_KID_SEX: 'Мальчик или девочка?',
+        BotMessage.MessageTypes.ASK_FOR_CITY: 'Выберите, в каком районе живете?',
+        BotMessage.MessageTypes.ASK_FOR_SOCIAL: 'Дайте ссылку на инстаграм/фейсбук',
 
         BotMessage.MessageTypes.PROFILE_SAVED: 'Ваш профиль сохранен. Ждите приглашения на встречу!',
 
@@ -21,7 +23,6 @@ class Command(BaseCommand):
 
         BotMessage.MessageTypes.SEND_PAIR_INFO: (
             'Вот твоя пара на этой неделе: {username} \n'
-            'О себе: {about} \n'
             'Ссылка: {social_networks}'
         ),
 
@@ -40,6 +41,10 @@ class Command(BaseCommand):
         BotMessage.MessageTypes.FEEDBACK_REASON_COLLECTED: (
             'Спасибо за ваш отзыв! '
             'Ждем вас на следующей неделе, надеемся будет лучше'
+        ),
+
+        BotMessage.MessageTypes.NUMBER_INPUT_ERROR: (
+            'Не могу распознать число, напишите число вот так "4" или вот так "4.5".'
         ),
     }
 

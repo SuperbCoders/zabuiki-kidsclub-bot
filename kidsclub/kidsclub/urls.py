@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from bookclub_bot.admin import admin_site
+from kidsclub_bot.admin import admin_site
 
 urlpatterns = [
     path('admin/', admin_site.urls),
