@@ -34,7 +34,7 @@
 
     - name: run migrations
       shell:
-        chdir: "{{ project_dir }}"
+        chdir: "{{ manage_py_dir }}"
         cmd: "export $(grep -v '^#' {{ bot_env }} | xargs -0 ) && python3.6 manage.py migrate"
 
     - name: templates
