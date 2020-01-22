@@ -10,7 +10,7 @@ User=manager
 WorkingDirectory={{ manage_py_dir }}
 ExecStart=/bin/sh -c '/home/manager/.local/bin/celery beat  \
   -A kidsclub --pidfile=/var/run/celery/kidsclub_beat.pid \
-  --logfile=/var/log/celery/kidsclub_beat.log --loglevel=DEBUG' -S django
+  --logfile=/var/log/celery/kidsclub_beat.log --loglevel=DEBUG -S django'
 
 [Install]
 WantedBy=multi-user.target
