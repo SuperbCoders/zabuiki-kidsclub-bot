@@ -237,6 +237,7 @@ reg_conv_handler = ConversationHandler(
         WAIT_FOR_SOCIAL: [MessageHandler(Filters.text, record_social_register_end)],
     },
     fallbacks=[MessageHandler(Filters.text, try_again)],
+    allow_reentry=True,
 )
 
 
@@ -333,4 +334,5 @@ collect_feedback_conv_handler = ConversationHandler(
         WAIT_FOR_REASON: [MessageHandler(Filters.text, record_feedback_reason)],
     },
     fallbacks=[MessageHandler(Filters.text, try_again)],
+    allow_reentry=True,
 )
