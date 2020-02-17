@@ -52,7 +52,7 @@ def create_invite_intent():
         WHERE b.person_id IS NULL
             AND a.tg_id IS NOT NULL
             AND a.location_id IS NOT NULL
-            AND a.is_blocked = 0
+            AND a.is_blocked = false
     """)
 
     if persons:
@@ -139,7 +139,7 @@ def find_pair():
                 ) AS B ON (
                     A.age = B.age AND A.sex = B.sex
                 )
-            ) AND is_blocked = 0
+            ) AND is_blocked = false
         """)]
 
         candidates = Person.objects.filter(
