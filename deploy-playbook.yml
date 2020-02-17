@@ -52,6 +52,7 @@
       become: true
       systemd:
         state: restarted
+        enabled: yes
         daemon_reload: yes
         name: "{{ item }}"
       with_items:
